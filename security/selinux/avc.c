@@ -1076,13 +1076,7 @@ static noinline int avc_denied(u32 ssid, u32 tsid,
 				u8 driver, u8 xperm, unsigned flags,
 				struct av_decision *avd)
 {
-	if (flags & AVC_STRICT)
-		return -EACCES;
-#ifdef CONFIG_ALWAYS_ENFORCE
-	if (!(avd->flags & AVD_FLAGS_PERMISSIVE))
-#else
 	if (selinux_enforcing && !(avd->flags & AVD_FLAGS_PERMISSIVE))
-#endif
 		return -EACCES;
 
 	avc_update_node(AVC_CALLBACK_GRANT, requested, driver, xperm, ssid,
@@ -1177,7 +1171,7 @@ decision:
  * @tsid: target security identifier
  * @tclass: target security class
  * @requested: requested permissions, interpreted based on @tclass
- * @flags:  AVC_STRICT or 0
+ * @flags: 0
  * @avd: access vector decisions
  *
  * Check the AVC to determine whether the @requested permissions are granted

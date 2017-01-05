@@ -772,9 +772,6 @@ out:
 	kfree(n);
 	kfree(t);
 
-#ifdef CONFIG_ALWAYS_ENFORCE
-	selinux_enforcing = 1;
-#endif
 	if (!selinux_enforcing)
 		return 0;
 	return -EPERM;
@@ -1532,9 +1529,6 @@ out:
 	kfree(s);
 	kfree(t);
 	kfree(n);
-#ifdef CONFIG_ALWAYS_ENFORCE
-        selinux_enforcing = 1;
-#endif
 	if (!selinux_enforcing)
 		return 0;
 	return -EACCES;
@@ -1825,9 +1819,6 @@ static inline int convert_context_handle_invalid_context(struct context *context
 {
 	char *s;
 	u32 len;
-#ifdef CONFIG_ALWAYS_ENFORCE
-        selinux_enforcing = 1;
-#endif
 	if (selinux_enforcing)
 		return -EINVAL;
 
@@ -2427,7 +2418,7 @@ out_unlock:
 		struct av_decision dummy_avd;
 		rc = avc_has_perm_noaudit(fromsid, mysids[i],
 					  SECCLASS_PROCESS, /* kernel value */
-					  PROCESS__TRANSITION, AVC_STRICT,
+					  PROCESS__TRANSITION, 0,
 					  &dummy_avd);
 		if (!rc)
 			mysids2[j++] = mysids[i];
